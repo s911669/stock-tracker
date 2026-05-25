@@ -4,140 +4,142 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>주식 분야 트래커</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f8f7f4;
-    --surface: #ffffff;
-    --border: #e5e3dc;
-    --border-strong: #ccc9be;
-    --text: #1a1a18;
-    --text-muted: #6b6860;
-    --text-hint: #9e9b91;
-    --accent: #2563eb;
-    --accent-light: #eff6ff;
-    --up: #dc2626;
-    --down: #16a34a;
-    --tag-bg: #f0ede6;
-    --tag-text: #44423c;
-    --radius: 10px;
-    --radius-sm: 6px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; min-height: 100vh; }
-  
-  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; position: sticky; top: 0; z-index: 100; }
-  .header-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
-  .logo { font-size: 16px; font-weight: 700; letter-spacing: -0.5px; }
-  .logo span { color: var(--accent); }
-  .header-actions { display: flex; gap: 8px; align-items: center; }
+:root {
+  --bg: #0d0f12;
+  --surface: #13161b;
+  --surface2: #1a1e25;
+  --border: #252a33;
+  --border2: #2e3440;
+  --text: #e8eaf0;
+  --text2: #8b95a8;
+  --text3: #4e5668;
+  --accent: #4f8ef7;
+  --accent2: #1a3a6e;
+  --up: #3dd68c;
+  --down: #f75555;
+  --tag-bg: #1e2530;
+  --tag-text: #7eb3ff;
+  --mono: 'IBM Plex Mono', monospace;
+  --sans: 'Noto Sans KR', sans-serif;
+  --radius: 8px;
+  --radius-lg: 12px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; min-height: 100vh; }
 
-  .main { max-width: 1100px; margin: 0 auto; padding: 1.5rem; }
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1.5rem; position: sticky; top: 0; z-index: 100; }
+.header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 52px; }
+.logo { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--accent); letter-spacing: 1px; }
+.logo span { color: var(--text2); font-weight: 400; }
+.header-btns { display: flex; gap: 8px; }
 
-  .status-bar { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1.25rem; font-size: 13px; color: var(--text-muted); }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #16a34a; flex-shrink: 0; }
-  .dot.loading { background: #d97706; animation: blink 1s infinite; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.main { max-width: 1200px; margin: 0 auto; padding: 1.25rem 1.5rem; }
 
-  .tabs { display: flex; gap: 2px; margin-bottom: 1.25rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 4px; width: fit-content; }
-  .tab { padding: 7px 16px; border-radius: var(--radius-sm); border: none; background: none; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text-muted); transition: all 0.15s; display: flex; align-items: center; gap: 6px; }
-  .tab:hover { color: var(--text); background: var(--bg); }
-  .tab.active { background: var(--accent); color: #fff; }
-  .tab i { font-size: 15px; }
+.status-bar { display: flex; align-items: center; gap: 10px; padding: 9px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 1.25rem; font-size: 12px; color: var(--text2); font-family: var(--mono); }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--up); flex-shrink: 0; }
+.dot.loading { background: #f7a535; animation: blink 0.8s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-  .section { display: none; }
-  .section.active { display: block; }
+.tabs { display: flex; gap: 1px; margin-bottom: 1.25rem; background: var(--border); border-radius: var(--radius); padding: 1px; width: fit-content; }
+.tab { padding: 7px 18px; border-radius: 7px; border: none; background: none; cursor: pointer; font-size: 13px; font-family: var(--sans); font-weight: 500; color: var(--text2); transition: all 0.15s; }
+.tab:hover { color: var(--text); background: var(--surface2); }
+.tab.active { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
 
-  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1.25rem; }
-  .metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; }
-  .metric-label { font-size: 11px; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-  .metric-value { font-size: 26px; font-weight: 700; letter-spacing: -1px; }
+.section { display: none; }
+.section.active { display: block; }
 
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.25rem; }
+.metric { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; }
+.metric-label { font-size: 11px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.metric-value { font-size: 24px; font-weight: 700; font-family: var(--mono); }
 
-  table { width: 100%; border-collapse: collapse; }
-  thead th { padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text-hint); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); background: var(--bg); }
-  thead th:first-child { border-radius: var(--radius) 0 0 0; }
-  thead th:last-child { border-radius: 0 var(--radius) 0 0; }
-  tbody tr { transition: background 0.1s; }
-  tbody tr:hover { background: var(--bg); }
-  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-  tbody tr:last-child td { border-bottom: none; }
-  .ticker-cell { font-family: 'SF Mono', 'Fira Code', monospace; font-weight: 700; font-size: 13px; color: var(--accent); }
-  .price-cell { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; }
-  .change-cell { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; font-weight: 600; }
-  .up { color: var(--up); }
-  .down { color: var(--down); }
-  .flat { color: var(--text-hint); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th { padding: 9px 12px; text-align: left; font-size: 11px; font-weight: 600; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.8px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+tbody tr { transition: background 0.1s; border-bottom: 1px solid var(--border); }
+tbody tr:hover { background: var(--surface2); }
+tbody tr:last-child { border-bottom: none; }
+tbody td { padding: 10px 12px; vertical-align: middle; }
 
-  .tag { display: inline-flex; align-items: center; gap: 4px; background: var(--tag-bg); color: var(--tag-text); border-radius: 20px; padding: 2px 9px; font-size: 11px; font-weight: 500; margin: 2px; }
-  .tag-rm { background: none; border: none; cursor: pointer; color: var(--text-hint); font-size: 13px; padding: 0; line-height: 1; }
-  .tag-rm:hover { color: var(--up); }
+.ticker { font-family: var(--mono); font-weight: 600; font-size: 13px; color: var(--accent); }
+.name { font-size: 12px; color: var(--text2); margin-top: 2px; }
+.tag { display: inline-block; background: var(--tag-bg); color: var(--tag-text); border-radius: 4px; padding: 2px 7px; font-size: 11px; font-family: var(--mono); margin: 2px 2px 2px 0; border: 1px solid #1e3a6e; }
+.up { color: var(--up); font-family: var(--mono); font-weight: 600; }
+.down { color: var(--down); font-family: var(--mono); font-weight: 600; }
+.flat { color: var(--text3); font-family: var(--mono); }
+.price { font-family: var(--mono); font-size: 13px; }
+.desc-cell { font-size: 12px; color: var(--text2); max-width: 180px; }
+.news-cell { font-size: 12px; color: var(--text2); max-width: 180px; }
+.earn-cell { font-size: 12px; color: var(--text2); max-width: 150px; }
 
-  .tag-input-area { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); min-height: 42px; cursor: text; transition: border-color 0.15s; }
-  .tag-input-area:focus-within { border-color: var(--accent); outline: none; }
-  .tag-input-area input { border: none; outline: none; background: none; font-size: 14px; min-width: 120px; flex: 1; color: var(--text); }
+.btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: var(--radius); font-size: 12px; font-family: var(--mono); font-weight: 600; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); letter-spacing: 0.5px; }
+.btn:hover { color: var(--text); border-color: var(--accent2); background: var(--surface); }
+.btn-accent { background: var(--accent2); color: var(--accent); border-color: var(--accent2); }
+.btn-accent:hover { background: #1f4a8a; }
+.btn-sm { padding: 5px 10px; font-size: 11px; }
+.btn-danger:hover { color: var(--down); border-color: #5a1a1a; }
 
-  .preset-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
-  .preset-tag { background: none; border: 1px dashed var(--border-strong); border-radius: 20px; padding: 2px 10px; font-size: 11px; cursor: pointer; color: var(--text-muted); transition: all 0.15s; }
-  .preset-tag:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); }
 
-  .form-group { margin-bottom: 1rem; }
-  .form-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; display: block; }
-  input[type=text] { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.15s; }
-  input[type=text]:focus { border-color: var(--accent); }
-  select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; background: var(--surface); color: var(--text); outline: none; cursor: pointer; }
+.form-label { font-size: 11px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px; display: block; }
+input[type=text], textarea, select { width: 100%; padding: 8px 11px; border: 1px solid var(--border2); border-radius: var(--radius); font-size: 13px; font-family: var(--sans); background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; }
+input[type=text]:focus, textarea:focus, select:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 60px; }
 
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border); background: var(--surface); color: var(--text); }
-  .btn:hover { background: var(--bg); }
-  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-  .btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
-  .btn-sm { padding: 5px 10px; font-size: 12px; }
-  .btn-danger { color: var(--up); }
-  .btn-danger:hover { background: #fef2f2; border-color: #fca5a5; }
+.tag-wrap { display: flex; flex-wrap: wrap; gap: 4px; padding: 7px 9px; border: 1px solid var(--border2); border-radius: var(--radius); min-height: 38px; cursor: text; }
+.tag-wrap:focus-within { border-color: var(--accent); }
+.tag-wrap input { border: none; outline: none; background: none; font-size: 13px; min-width: 100px; flex: 1; color: var(--text); font-family: var(--sans); }
+.tag-rm { background: none; border: none; cursor: pointer; color: var(--text3); font-size: 13px; padding: 0 0 0 3px; }
+.tag-rm:hover { color: var(--down); }
 
-  .search-result { margin-bottom: 1rem; }
-  .sector-label { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
-  .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-hint); }
-  .empty-state i { font-size: 36px; margin-bottom: 8px; display: block; }
+.preset-area { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.preset { background: none; border: 1px dashed var(--border2); border-radius: 4px; padding: 2px 8px; font-size: 11px; font-family: var(--mono); cursor: pointer; color: var(--text3); transition: all 0.15s; }
+.preset:hover { color: var(--accent); border-color: var(--accent2); background: var(--tag-bg); }
 
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.search-base { background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.sector-hdr { background: var(--surface2); padding: 7px 12px; font-size: 11px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 6px; }
+.sector-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+.empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 13px; font-family: var(--mono); }
 
-  .base-stock-info { background: var(--accent-light); border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 12px 16px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+.edit-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; }
+.edit-modal.open { display: flex; }
+.edit-box { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius-lg); padding: 1.5rem; width: 560px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+.edit-box h3 { font-family: var(--mono); font-size: 14px; color: var(--accent); margin-bottom: 1.25rem; }
+.form-row { margin-bottom: 1rem; }
+.form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
 
-  @media (max-width: 640px) {
-    .two-col { grid-template-columns: 1fr; }
-    .metrics { grid-template-columns: 1fr 1fr; }
-    .header-actions .btn span { display: none; }
-  }
+@media (max-width: 768px) {
+  .metrics { grid-template-columns: 1fr 1fr; }
+  .form-2col { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="header-inner">
-    <div class="logo">주식 분야 <span>트래커</span></div>
-    <div class="header-actions">
-      <button class="btn btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> <span>Export CSV</span></button>
-      <label class="btn btn-sm" style="cursor:pointer;"><i class="ti ti-upload"></i> <span>Import CSV</span><input type="file" accept=".csv" style="display:none" onchange="importCSV(this)"></label>
+    <div class="logo">STOCK<span>_</span>TRACKER</div>
+    <div class="header-btns">
+      <button class="btn btn-sm" onclick="exportCSV()">↓ EXPORT</button>
+      <label class="btn btn-sm" style="cursor:pointer;">↑ IMPORT<input type="file" accept=".csv" style="display:none" onchange="importCSV(this)"></label>
     </div>
   </div>
 </div>
 
 <div class="main">
-
   <div class="status-bar">
     <span class="dot" id="dot"></span>
-    <span id="statusText">앱 로드 완료</span>
-    <span id="lastUpdate" style="margin-left:auto;font-size:12px;"></span>
-    <button class="btn btn-sm" onclick="updateAllPrices()" style="margin-left:8px;"><i class="ti ti-refresh"></i> 주가 업데이트</button>
+    <span id="statusText">READY</span>
+    <span id="lastUpdate" style="margin-left:auto;"></span>
+    <button class="btn btn-sm btn-accent" onclick="updateAllPrices()" style="margin-left:10px;">⟳ 주가 업데이트</button>
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('list',this)"><i class="ti ti-table"></i> 종목 목록</button>
-    <button class="tab" onclick="switchTab('add',this)"><i class="ti ti-plus"></i> 종목 추가</button>
-    <button class="tab" onclick="switchTab('search',this)"><i class="ti ti-git-branch"></i> 연관 종목 조회</button>
+    <button class="tab active" onclick="switchTab('list',this)">종목 목록</button>
+    <button class="tab" onclick="switchTab('add',this)">종목 추가</button>
+    <button class="tab" onclick="switchTab('search',this)">연관 종목 조회</button>
   </div>
 
   <!-- 종목 목록 -->
@@ -145,13 +147,22 @@
     <div class="metrics">
       <div class="metric"><div class="metric-label">총 종목</div><div class="metric-value" id="m-total">0</div></div>
       <div class="metric"><div class="metric-label">분야 수</div><div class="metric-value" id="m-sectors">0</div></div>
-      <div class="metric"><div class="metric-label">상승 종목</div><div class="metric-value up" id="m-up">0</div></div>
-      <div class="metric"><div class="metric-label">하락 종목</div><div class="metric-value down" id="m-down">0</div></div>
+      <div class="metric"><div class="metric-label">상승</div><div class="metric-value up" id="m-up">0</div></div>
+      <div class="metric"><div class="metric-label">하락</div><div class="metric-value down" id="m-down">0</div></div>
     </div>
     <div class="card" style="overflow:hidden;">
       <table>
         <thead><tr>
-          <th>티커</th><th>종목명</th><th>분야</th><th>현재가</th><th>등락률</th><th></th>
+          <th>티커 / 종목명</th>
+          <th>관련분야</th>
+          <th>종목설명</th>
+          <th>최근뉴스</th>
+          <th>실적</th>
+          <th>현재가</th>
+          <th>전일</th>
+          <th>금일</th>
+          <th>30일</th>
+          <th></th>
         </tr></thead>
         <tbody id="stockBody"></tbody>
       </table>
@@ -160,44 +171,67 @@
 
   <!-- 종목 추가 -->
   <div id="tab-add" class="section">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;">
-      <div>
-        <div class="card" style="padding:1.25rem;">
-          <p style="font-weight:700;font-size:15px;margin-bottom:1rem;">새 종목 추가</p>
-          <div class="two-col" style="gap:8px;margin-bottom:1rem;">
-            <div class="form-group" style="margin:0;">
-              <label class="form-label">티커</label>
-              <input type="text" id="newTicker" placeholder="예: NVDA" style="text-transform:uppercase;">
-            </div>
-            <div class="form-group" style="margin:0;">
-              <label class="form-label">종목명</label>
-              <input type="text" id="newName" placeholder="예: 엔비디아">
-            </div>
+    <div style="display:grid;grid-template-columns:1.2fr 0.8fr;gap:1.25rem;">
+      <div class="card" style="padding:1.25rem;">
+        <p style="font-family:var(--mono);font-size:13px;color:var(--accent);margin-bottom:1.25rem;">+ NEW STOCK</p>
+        <div class="form-2col">
+          <div>
+            <label class="form-label">티커</label>
+            <input type="text" id="newTicker" placeholder="예: NVDA" style="text-transform:uppercase;">
           </div>
-          <div class="form-group">
-            <label class="form-label">분야 태그 <span style="font-weight:400;color:var(--text-hint)">(입력 후 Enter)</span></label>
-            <div class="tag-input-area" id="tagWrap" onclick="document.getElementById('tagInput').focus()">
-              <input type="text" id="tagInput" placeholder="분야 입력..." onkeydown="handleTagInput(event)">
-            </div>
-            <div class="preset-tags" id="presetArea"></div>
+          <div>
+            <label class="form-label">종목명 (공백 시 자동완성)</label>
+            <input type="text" id="newName" placeholder="공백이면 자동완성">
           </div>
-          <button class="btn btn-primary" style="width:100%;" onclick="addStock()"><i class="ti ti-plus"></i> 종목 추가</button>
         </div>
+        <div class="form-row">
+          <label class="form-label">관련분야 (Enter로 추가)</label>
+          <div class="tag-wrap" id="tagWrap" onclick="document.getElementById('tagInput').focus()">
+            <input type="text" id="tagInput" placeholder="분야 입력..." onkeydown="handleTagInput(event)">
+          </div>
+          <div class="preset-area" id="presetArea"></div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">종목설명</label>
+          <textarea id="newDesc" placeholder="간단한 회사/종목 설명"></textarea>
+        </div>
+        <div class="form-2col">
+          <div>
+            <label class="form-label">최근뉴스</label>
+            <textarea id="newNews" placeholder="최근 주요 뉴스" style="min-height:50px;"></textarea>
+          </div>
+          <div>
+            <label class="form-label">실적</label>
+            <textarea id="newEarn" placeholder="최근 실적 메모" style="min-height:50px;"></textarea>
+          </div>
+        </div>
+        <button class="btn btn-accent" style="width:100%;justify-content:center;" onclick="addStock()">+ 종목 추가</button>
       </div>
-      <div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
         <div class="card" style="padding:1.25rem;">
-          <p style="font-weight:700;font-size:15px;margin-bottom:6px;">샘플 데이터</p>
-          <p style="font-size:13px;color:var(--text-muted);margin-bottom:1rem;">미국 주요 종목 14개를 빠르게 불러옵니다.</p>
-          <button class="btn" style="width:100%;margin-bottom:10px;" onclick="loadSample()"><i class="ti ti-database-import"></i> 샘플 데이터 로드</button>
-          <p style="font-size:11px;color:var(--text-hint);">포함 종목: NVDA, AMD, MSFT, GOOGL, AMZN, AVGO, ANET, SMCI, TSM, TSLA, META, PANW, PLTR, INTC</p>
+          <p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:10px;">FIELD GUIDE</p>
+          <div style="font-size:12px;color:var(--text2);line-height:2.2;">
+            <div><span style="font-family:var(--mono);color:var(--accent);min-width:90px;display:inline-block;">티커</span> 예: NVDA, AAPL</div>
+            <div><span style="font-family:var(--mono);color:var(--accent);min-width:90px;display:inline-block;">종목명</span> 공백 → 자동완성</div>
+            <div><span style="font-family:var(--mono);color:var(--accent);min-width:90px;display:inline-block;">관련분야</span> 복수 선택 가능</div>
+            <div><span style="font-family:var(--mono);color:var(--accent);min-width:90px;display:inline-block;">종목설명</span> 직접 입력</div>
+            <div><span style="font-family:var(--mono);color:var(--accent);min-width:90px;display:inline-block;">최근뉴스</span> 직접 입력</div>
+            <div><span style="font-family:var(--mono);color:var(--accent);min-width:90px;display:inline-block;">실적</span> 직접 입력</div>
+            <div><span style="font-family:var(--mono);color:var(--accent);min-width:90px;display:inline-block;">상승률</span> 자동 업데이트</div>
+          </div>
         </div>
-        <div class="card" style="padding:1.25rem;margin-top:12px;">
-          <p style="font-weight:700;font-size:15px;margin-bottom:6px;">엑셀 연동 방법</p>
-          <ol style="font-size:13px;color:var(--text-muted);padding-left:1.2rem;line-height:2;">
-            <li>Export CSV → 엑셀에서 편집</li>
-            <li>편집 완료 후 CSV로 저장</li>
-            <li>Import CSV로 다시 불러오기</li>
-          </ol>
+        <div class="card" style="padding:1.25rem;">
+          <p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:10px;">SECTORS</p>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;">
+            <span class="tag">AI</span><span class="tag">반도체</span><span class="tag">전력</span>
+            <span class="tag">광통신</span><span class="tag">통신</span><span class="tag">데이터센터</span>
+            <span class="tag">인프라</span><span class="tag">보안</span><span class="tag">소프트웨어</span>
+            <span class="tag">데이터베이스</span><span class="tag">컴퓨터부품</span><span class="tag">우주항공</span>
+            <span class="tag">양자컴퓨터</span><span class="tag">원자력</span><span class="tag">에너지</span>
+            <span class="tag">태양광</span><span class="tag">2차전지</span><span class="tag">금융</span>
+            <span class="tag">코인</span><span class="tag">유통</span><span class="tag">제약바이오</span>
+            <span class="tag">기타</span>
+          </div>
         </div>
       </div>
     </div>
@@ -206,307 +240,326 @@
   <!-- 연관 종목 조회 -->
   <div id="tab-search" class="section">
     <div class="card" style="padding:1.25rem;margin-bottom:1.25rem;">
-      <p style="font-weight:700;font-size:15px;margin-bottom:1rem;">연관 종목 조회</p>
+      <p style="font-family:var(--mono);font-size:12px;color:var(--text3);margin-bottom:10px;">RELATED STOCKS</p>
       <div style="display:flex;gap:8px;">
         <select id="searchTicker" style="flex:1;"></select>
-        <button class="btn btn-primary" onclick="searchRelated()"><i class="ti ti-search"></i> 조회</button>
+        <button class="btn btn-accent" onclick="searchRelated()">조회</button>
       </div>
     </div>
     <div id="searchResults"></div>
   </div>
+</div>
 
+<!-- 편집 모달 -->
+<div class="edit-modal" id="editModal">
+  <div class="edit-box">
+    <h3>EDIT STOCK</h3>
+    <input type="hidden" id="editIdx">
+    <div class="form-2col">
+      <div>
+        <label class="form-label">티커</label>
+        <input type="text" id="editTicker" readonly style="opacity:0.5;">
+      </div>
+      <div>
+        <label class="form-label">종목명</label>
+        <input type="text" id="editName">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">관련분야</label>
+      <div class="tag-wrap" id="editTagWrap" onclick="document.getElementById('editTagInput').focus()">
+        <input type="text" id="editTagInput" placeholder="분야 입력..." onkeydown="handleEditTagInput(event)">
+      </div>
+      <div class="preset-area" id="editPresetArea"></div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">종목설명</label>
+      <textarea id="editDesc"></textarea>
+    </div>
+    <div class="form-2col">
+      <div>
+        <label class="form-label">최근뉴스</label>
+        <textarea id="editNews" style="min-height:50px;"></textarea>
+      </div>
+      <div>
+        <label class="form-label">실적</label>
+        <textarea id="editEarn" style="min-height:50px;"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:1rem;">
+      <button class="btn" onclick="closeEdit()">취소</button>
+      <button class="btn btn-accent" onclick="saveEdit()">저장</button>
+    </div>
+  </div>
 </div>
 
 <script>
-let stocks = JSON.parse(localStorage.getItem('stockTracker_v2') || '[]');
-let newTags = [];
+const SECTORS = ['AI','반도체','전력','광통신','통신','데이터센터','인프라','보안','소프트웨어','데이터베이스','컴퓨터부품','우주항공','양자컴퓨터','원자력','에너지','태양광','2차전지','금융','코인','유통','제약바이오','기타'];
 
-const PRESETS = ['AI','반도체','광통신','데이터센터','클라우드','전기차','배터리','바이오','핀테크','소프트웨어','하드웨어','방산','에너지','소매','네트워크'];
-
-function save() {
-  localStorage.setItem('stockTracker_v2', JSON.stringify(stocks));
-  renderTable();
-  updateMetrics();
+let stocks = JSON.parse(localStorage.getItem('stockTracker_v3') || 'null');
+if (!stocks) {
+  stocks = [
+    {ticker:'NVDA', name:'NVIDIA Corporation', sectors:['AI','반도체'], desc:'GPU 및 AI생태계', news:'', earnings:'26.1Q 호실적 CAPEX 견조', price:null, chgDay:null, chgToday:null, chg30:null, updatedAt:null},
+    {ticker:'AMD', name:'Advanced Micro Devices', sectors:['AI','반도체'], desc:'CPU 및 GPU', news:'대만 10B 투자 계획', earnings:'26.1Q 호실적', price:null, chgDay:null, chgToday:null, chg30:null, updatedAt:null}
+  ];
+  save();
 }
 
+let newTags = [];
+let editTags = [];
+
+function save() { localStorage.setItem('stockTracker_v3', JSON.stringify(stocks)); renderTable(); updateMetrics(); }
+
 function switchTab(name, el) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
   el.classList.add('active');
-  if (name === 'search') populateSelect();
+  if(name==='search') populateSelect();
 }
 
 function updateMetrics() {
   document.getElementById('m-total').textContent = stocks.length;
-  const allSectors = new Set(stocks.flatMap(s => s.sectors));
-  document.getElementById('m-sectors').textContent = allSectors.size;
-  document.getElementById('m-up').textContent = stocks.filter(s => s.change > 0).length;
-  document.getElementById('m-down').textContent = stocks.filter(s => s.change < 0).length;
+  document.getElementById('m-sectors').textContent = new Set(stocks.flatMap(s=>s.sectors)).size;
+  document.getElementById('m-up').textContent = stocks.filter(s=>s.chgToday>0).length;
+  document.getElementById('m-down').textContent = stocks.filter(s=>s.chgToday<0).length;
 }
 
-function getChangeClass(c) {
-  if (c === undefined || c === null || c === '') return 'flat';
-  return c > 0 ? 'up' : c < 0 ? 'down' : 'flat';
-}
-
-function formatChange(c) {
-  if (c === undefined || c === null || c === '') return '--';
-  return (c > 0 ? '+' : '') + parseFloat(c).toFixed(2) + '%';
+function fmt(v, suffix='%') {
+  if(v===null||v===undefined||v==='') return '<span class="flat">--</span>';
+  const n = parseFloat(v);
+  const cls = n>0?'up':n<0?'down':'flat';
+  return `<span class="${cls}">${n>0?'+':''}${n.toFixed(2)}${suffix}</span>`;
 }
 
 function renderTable() {
   const tbody = document.getElementById('stockBody');
-  if (!stocks.length) {
-    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><i class="ti ti-database-off"></i>종목이 없습니다.<br>종목 추가 탭에서 추가하거나 샘플 데이터를 로드하세요.</div></td></tr>';
-    return;
-  }
-  tbody.innerHTML = stocks.map((s, i) => `
+  if(!stocks.length){tbody.innerHTML='<tr><td colspan="10"><div class="empty">종목이 없습니다. 종목 추가 탭에서 추가하세요.</div></td></tr>';return;}
+  tbody.innerHTML = stocks.map((s,i)=>`
     <tr>
-      <td><span class="ticker-cell">${s.ticker}</span></td>
-      <td>${s.name}</td>
-      <td>${s.sectors.map(sec => `<span class="tag">${sec}</span>`).join('')}</td>
-      <td><span class="price-cell">$${s.price || '--'}</span></td>
-      <td><span class="change-cell ${getChangeClass(s.change)}">${formatChange(s.change)}</span></td>
-      <td><button class="btn btn-sm btn-danger" onclick="deleteStock(${i})"><i class="ti ti-trash"></i></button></td>
+      <td><div class="ticker">${s.ticker}</div><div class="name">${s.name||''}</div></td>
+      <td>${s.sectors.map(sec=>`<span class="tag">${sec}</span>`).join('')}</td>
+      <td><div class="desc-cell">${s.desc||'—'}</div></td>
+      <td><div class="news-cell">${s.news||'—'}</div></td>
+      <td><div class="earn-cell">${s.earnings||'—'}</div></td>
+      <td><span class="price">$${s.price||'--'}</span></td>
+      <td>${fmt(s.chgDay)}</td>
+      <td>${fmt(s.chgToday)}</td>
+      <td>${fmt(s.chg30)}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn btn-sm" onclick="openEdit(${i})" style="margin-right:4px;">편집</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteStock(${i})">✕</button>
+      </td>
     </tr>`).join('');
 }
 
-function deleteStock(i) {
-  if (confirm(`${stocks[i].ticker}(${stocks[i].name})을(를) 삭제할까요?`)) {
-    stocks.splice(i, 1);
-    save();
-  }
-}
+function deleteStock(i) { if(confirm(`${stocks[i].ticker} 삭제할까요?`)){stocks.splice(i,1);save();} }
 
+// Tag input
 function handleTagInput(e) {
-  if (e.key === 'Enter' || e.key === ',') {
-    e.preventDefault();
-    const val = e.target.value.trim().replace(',', '');
-    if (val && !newTags.includes(val)) { newTags.push(val); renderTagWrap(); }
-    e.target.value = '';
-  }
+  if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(',','');if(v&&!newTags.includes(v)){newTags.push(v);renderTagWrap();}e.target.value='';}
 }
-
 function renderTagWrap() {
-  const wrap = document.getElementById('tagWrap');
-  const input = document.getElementById('tagInput');
-  wrap.innerHTML = '';
-  newTags.forEach((t, i) => {
-    const span = document.createElement('span');
-    span.className = 'tag';
-    span.innerHTML = `${t}<button class="tag-rm" onclick="removeTag(${i})">×</button>`;
-    wrap.appendChild(span);
-  });
-  wrap.appendChild(input);
-  input.focus();
-  renderPresets();
+  const w=document.getElementById('tagWrap'),inp=document.getElementById('tagInput');
+  w.innerHTML='';
+  newTags.forEach((t,i)=>{const s=document.createElement('span');s.className='tag';s.innerHTML=`${t}<button class="tag-rm" onclick="removeTag(${i})">×</button>`;w.appendChild(s);});
+  w.appendChild(inp);inp.focus();renderPresets();
+}
+function removeTag(i){newTags.splice(i,1);renderTagWrap();}
+function renderPresets(){
+  const ex=new Set(newTags);
+  document.getElementById('presetArea').innerHTML=SECTORS.filter(s=>!ex.has(s)).map(s=>`<button class="preset" onclick="addPreset('${s}')">${s}</button>`).join('');
+}
+function addPreset(s){if(!newTags.includes(s)){newTags.push(s);renderTagWrap();}}
+
+// Edit tag input
+function handleEditTagInput(e) {
+  if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(',','');if(v&&!editTags.includes(v)){editTags.push(v);renderEditTagWrap();}e.target.value='';}
+}
+function renderEditTagWrap(){
+  const w=document.getElementById('editTagWrap'),inp=document.getElementById('editTagInput');
+  w.innerHTML='';
+  editTags.forEach((t,i)=>{const s=document.createElement('span');s.className='tag';s.innerHTML=`${t}<button class="tag-rm" onclick="removeEditTag(${i})">×</button>`;w.appendChild(s);});
+  w.appendChild(inp);inp.focus();
+  const ex=new Set(editTags);
+  document.getElementById('editPresetArea').innerHTML=SECTORS.filter(s=>!ex.has(s)).map(s=>`<button class="preset" onclick="addEditPreset('${s}')">${s}</button>`).join('');
+}
+function removeEditTag(i){editTags.splice(i,1);renderEditTagWrap();}
+function addEditPreset(s){if(!editTags.includes(s)){editTags.push(s);renderEditTagWrap();}}
+
+function openEdit(i){
+  const s=stocks[i];
+  document.getElementById('editIdx').value=i;
+  document.getElementById('editTicker').value=s.ticker;
+  document.getElementById('editName').value=s.name||'';
+  document.getElementById('editDesc').value=s.desc||'';
+  document.getElementById('editNews').value=s.news||'';
+  document.getElementById('editEarn').value=s.earnings||'';
+  editTags=[...s.sectors];
+  renderEditTagWrap();
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEdit(){document.getElementById('editModal').classList.remove('open');}
+function saveEdit(){
+  const i=parseInt(document.getElementById('editIdx').value);
+  stocks[i].name=document.getElementById('editName').value;
+  stocks[i].desc=document.getElementById('editDesc').value;
+  stocks[i].news=document.getElementById('editNews').value;
+  stocks[i].earnings=document.getElementById('editEarn').value;
+  stocks[i].sectors=[...editTags];
+  save();closeEdit();
 }
 
-function removeTag(i) { newTags.splice(i, 1); renderTagWrap(); }
-
-function renderPresets() {
-  const existing = new Set(newTags);
-  document.getElementById('presetArea').innerHTML = PRESETS
-    .filter(s => !existing.has(s))
-    .map(s => `<button class="preset-tag" onclick="addPreset('${s}')">${s}</button>`).join('');
-}
-
-function addPreset(s) {
-  if (!newTags.includes(s)) { newTags.push(s); renderTagWrap(); }
-}
-
-function addStock() {
-  const ticker = document.getElementById('newTicker').value.trim().toUpperCase();
-  const name = document.getElementById('newName').value.trim();
-  if (!ticker || !name) { alert('티커와 종목명을 입력하세요.'); return; }
-  if (stocks.find(s => s.ticker === ticker)) { alert('이미 등록된 티커입니다.'); return; }
-  stocks.push({ ticker, name, sectors: [...newTags], price: null, change: null, updatedAt: null });
-  newTags = [];
-  document.getElementById('newTicker').value = '';
-  document.getElementById('newName').value = '';
+async function addStock(){
+  const ticker=document.getElementById('newTicker').value.trim().toUpperCase();
+  let name=document.getElementById('newName').value.trim();
+  const desc=document.getElementById('newDesc').value.trim();
+  const news=document.getElementById('newNews').value.trim();
+  const earnings=document.getElementById('newEarn').value.trim();
+  if(!ticker){alert('티커를 입력하세요.');return;}
+  if(stocks.find(s=>s.ticker===ticker)){alert('이미 있는 티커입니다.');return;}
+  if(!name){
+    setStatus('종목명 자동완성 중...', true);
+    name = await fetchName(ticker);
+    setStatus('완료', false);
+  }
+  stocks.push({ticker,name,sectors:[...newTags],desc,news,earnings,price:null,chgDay:null,chgToday:null,chg30:null,updatedAt:null});
+  newTags=[];
+  document.getElementById('newTicker').value='';
+  document.getElementById('newName').value='';
+  document.getElementById('newDesc').value='';
+  document.getElementById('newNews').value='';
+  document.getElementById('newEarn').value='';
   renderTagWrap();
   save();
-  fetchPrice(stocks[stocks.length - 1]).then(() => save());
+  fetchPriceData(stocks[stocks.length-1]).then(()=>save());
   alert(`${ticker} 추가 완료!`);
 }
 
-async function fetchPrice(stock) {
+async function fetchName(ticker){
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: `Return ONLY valid JSON for stock "${stock.ticker}": {"price": 123.45, "change": 1.23} where change is today's % change. Use realistic recent data. No explanation, no markdown.` }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content.map(b => b.text || '').join('');
-    const match = text.match(/\{[\s\S]*?\}/);
-    if (match) {
-      const parsed = JSON.parse(match[0]);
-      stock.price = parsed.price ? parseFloat(parsed.price).toFixed(2) : null;
-      stock.change = parsed.change !== undefined ? parseFloat(parseFloat(parsed.change).toFixed(2)) : null;
-      stock.updatedAt = new Date().toLocaleString('ko-KR');
-    }
-  } catch (e) { console.error(stock.ticker, e); }
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:100,messages:[{role:'user',content:`What is the full official company name for stock ticker "${ticker}"? Reply with ONLY the company name, nothing else.`}]})});
+    const data=await res.json();
+    return data.content.map(b=>b.text||'').join('').trim()||ticker;
+  }catch(e){return ticker;}
 }
 
-async function updateAllPrices() {
-  if (!stocks.length) { alert('종목이 없습니다.'); return; }
-  const dot = document.getElementById('dot');
-  const statusText = document.getElementById('statusText');
-  dot.className = 'dot loading';
-  for (let i = 0; i < stocks.length; i++) {
-    statusText.textContent = `주가 업데이트 중... (${i + 1}/${stocks.length}) ${stocks[i].ticker}`;
-    await fetchPrice(stocks[i]);
+async function fetchPriceData(stock){
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:`Return ONLY valid JSON for stock "${stock.ticker}" with realistic recent data: {"price":123.45,"chgDay":1.23,"chgToday":0.85,"chg30":12.5} where chgDay=yesterday's % change, chgToday=today's % change, chg30=30-day % change. No explanation.`}]})});
+    const data=await res.json();
+    const text=data.content.map(b=>b.text||'').join('');
+    const match=text.match(/\{[\s\S]*?\}/);
+    if(match){
+      const p=JSON.parse(match[0]);
+      stock.price=p.price?parseFloat(p.price).toFixed(2):null;
+      stock.chgDay=p.chgDay!==undefined?parseFloat(p.chgDay.toFixed(2)):null;
+      stock.chgToday=p.chgToday!==undefined?parseFloat(p.chgToday.toFixed(2)):null;
+      stock.chg30=p.chg30!==undefined?parseFloat(p.chg30.toFixed(2)):null;
+      stock.updatedAt=new Date().toLocaleString('ko-KR');
+    }
+  }catch(e){console.error(stock.ticker,e);}
+}
+
+function setStatus(msg, loading){
+  document.getElementById('statusText').textContent=msg;
+  document.getElementById('dot').className='dot'+(loading?' loading':'');
+}
+
+async function updateAllPrices(){
+  if(!stocks.length){alert('종목이 없습니다.');return;}
+  for(let i=0;i<stocks.length;i++){
+    setStatus(`업데이트 중... (${i+1}/${stocks.length}) ${stocks[i].ticker}`, true);
+    await fetchPriceData(stocks[i]);
     save();
   }
-  dot.className = 'dot';
-  const now = new Date().toLocaleString('ko-KR');
-  statusText.textContent = '업데이트 완료';
-  document.getElementById('lastUpdate').textContent = '최종: ' + now;
+  const now=new Date().toLocaleString('ko-KR');
+  setStatus('업데이트 완료', false);
+  document.getElementById('lastUpdate').textContent='업데이트: '+now;
 }
 
-function populateSelect() {
-  const sel = document.getElementById('searchTicker');
-  sel.innerHTML = '<option value="">조회할 종목 선택...</option>';
-  stocks.forEach(s => {
-    const opt = document.createElement('option');
-    opt.value = s.ticker;
-    opt.textContent = `${s.ticker} — ${s.name}`;
-    sel.appendChild(opt);
-  });
+function populateSelect(){
+  const sel=document.getElementById('searchTicker');
+  sel.innerHTML='<option value="">종목 선택...</option>';
+  stocks.forEach(s=>{const o=document.createElement('option');o.value=s.ticker;o.textContent=`${s.ticker} — ${s.name||''}`;sel.appendChild(o);});
 }
 
-function searchRelated() {
-  const ticker = document.getElementById('searchTicker').value;
-  if (!ticker) { alert('종목을 선택하세요.'); return; }
-  const base = stocks.find(s => s.ticker === ticker);
-  if (!base) return;
-  const results = document.getElementById('searchResults');
-  if (!base.sectors.length) {
-    results.innerHTML = '<div class="empty-state"><i class="ti ti-tag-off"></i>분야 태그가 없습니다.</div>';
-    return;
-  }
+function searchRelated(){
+  const ticker=document.getElementById('searchTicker').value;
+  if(!ticker){alert('종목을 선택하세요.');return;}
+  const base=stocks.find(s=>s.ticker===ticker);
+  if(!base||!base.sectors.length){document.getElementById('searchResults').innerHTML='<div class="empty">분야 태그가 없습니다.</div>';return;}
 
-  let html = `<div class="base-stock-info">
+  let html=`<div class="search-base">
     <div>
-      <span style="font-weight:700;font-size:16px;">${base.ticker}</span>
-      <span style="color:var(--text-muted);margin-left:8px;">${base.name}</span>
-      <div style="margin-top:4px;">${base.sectors.map(s => `<span class="tag">${s}</span>`).join('')}</div>
+      <span style="font-family:var(--mono);font-weight:600;font-size:15px;color:var(--accent);">${base.ticker}</span>
+      <span style="color:var(--text2);margin-left:8px;font-size:13px;">${base.name||''}</span>
+      <div style="margin-top:6px;">${base.sectors.map(s=>`<span class="tag">${s}</span>`).join('')}</div>
     </div>
     <div style="text-align:right;">
-      <div style="font-size:18px;font-weight:700;">$${base.price || '--'}</div>
-      <div class="${getChangeClass(base.change)}" style="font-weight:600;">${formatChange(base.change)}</div>
+      <div style="font-family:var(--mono);font-size:18px;font-weight:600;">$${base.price||'--'}</div>
+      <div style="font-size:12px;">금일 ${fmt(base.chgToday)}</div>
     </div>
   </div>`;
 
-  base.sectors.forEach(sector => {
-    const related = stocks.filter(s => s.ticker !== ticker && s.sectors.includes(sector));
-    html += `<div class="card search-result" style="overflow:hidden;">
-      <div class="sector-label"><i class="ti ti-tag"></i> ${sector} — ${related.length}개 연관 종목</div>
+  base.sectors.forEach(sector=>{
+    const related=stocks.filter(s=>s.ticker!==ticker&&s.sectors.includes(sector));
+    html+=`<div class="card" style="margin-bottom:1rem;overflow:hidden;">
+      <div class="sector-hdr"><span class="sector-dot"></span>${sector} — ${related.length}개 연관 종목</div>
       <table>
-        <thead><tr><th>티커</th><th>종목명</th><th>현재가</th><th>등락률</th><th>기타 분야</th></tr></thead>
+        <thead><tr><th>티커</th><th>종목명</th><th>관련분야</th><th>현재가</th><th>전일</th><th>금일</th><th>30일</th></tr></thead>
         <tbody>${related.length
-        ? related.map(s => `<tr>
-            <td><span class="ticker-cell">${s.ticker}</span></td>
-            <td>${s.name}</td>
-            <td><span class="price-cell">$${s.price || '--'}</span></td>
-            <td><span class="change-cell ${getChangeClass(s.change)}">${formatChange(s.change)}</span></td>
-            <td>${s.sectors.filter(sec => sec !== sector).map(sec => `<span class="tag">${sec}</span>`).join('') || '<span style="color:var(--text-hint)">—</span>'}</td>
+          ?related.map(s=>`<tr>
+            <td class="ticker">${s.ticker}</td>
+            <td style="font-size:12px;color:var(--text2);">${s.name||''}</td>
+            <td>${s.sectors.filter(sec=>sec!==sector).map(sec=>`<span class="tag">${sec}</span>`).join('')||'—'}</td>
+            <td><span class="price">$${s.price||'--'}</span></td>
+            <td>${fmt(s.chgDay)}</td>
+            <td>${fmt(s.chgToday)}</td>
+            <td>${fmt(s.chg30)}</td>
           </tr>`).join('')
-        : '<tr><td colspan="5"><div class="empty-state" style="padding:1rem;">해당 분야의 다른 종목이 없습니다.</div></td></tr>'}
+          :'<tr><td colspan="7"><div class="empty" style="padding:1rem;">해당 분야의 다른 종목이 없습니다.</div></td></tr>'}
         </tbody>
       </table>
     </div>`;
   });
-  results.innerHTML = html;
+  document.getElementById('searchResults').innerHTML=html;
 }
 
-function exportCSV() {
-  if (!stocks.length) { alert('내보낼 데이터가 없습니다.'); return; }
-  const header = '티커,종목명,분야(|구분),현재가,등락률(%),업데이트시각\n';
-  const rows = stocks.map(s =>
-    `${s.ticker},"${s.name}","${s.sectors.join('|')}",${s.price || ''},${s.change !== null ? s.change : ''},"${s.updatedAt || ''}"`
-  ).join('\n');
-  const blob = new Blob(['\uFEFF' + header + rows], { type: 'text/csv;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `stock_tracker_${new Date().toISOString().split('T')[0]}.csv`;
-  a.click();
+function exportCSV(){
+  if(!stocks.length){alert('데이터가 없습니다.');return;}
+  const header='티커,종목명,관련분야,종목설명,최근뉴스,실적,현재가,전일상승률,금일상승률,30일상승률,업데이트\n';
+  const rows=stocks.map(s=>`${s.ticker},"${s.name||''}","${s.sectors.join('|')}","${(s.desc||'').replace(/"/g,'""')}","${(s.news||'').replace(/"/g,'""')}","${(s.earnings||'').replace(/"/g,'""')}",${s.price||''},${s.chgDay!==null?s.chgDay:''},${s.chgToday!==null?s.chgToday:''},${s.chg30!==null?s.chg30:''},"${s.updatedAt||''}"`).join('\n');
+  const blob=new Blob(['\uFEFF'+header+rows],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`stock_tracker_${new Date().toISOString().split('T')[0]}.csv`;a.click();
 }
 
-function importCSV(input) {
-  const file = input.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const lines = e.target.result.replace(/^\uFEFF/, '').split('\n').filter(l => l.trim());
-    let imported = 0;
-    lines.slice(1).forEach(line => {
-      const cols = [];
-      let cur = '', inQ = false;
-      for (let ch of line) {
-        if (ch === '"') inQ = !inQ;
-        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
-        else cur += ch;
-      }
+function importCSV(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.replace(/^\uFEFF/,'').split('\n').filter(l=>l.trim());
+    let added=0;
+    lines.slice(1).forEach(line=>{
+      const cols=[];let cur='',inQ=false;
+      for(let ch of line){if(ch==='"')inQ=!inQ;else if(ch===','&&!inQ){cols.push(cur);cur='';}else cur+=ch;}
       cols.push(cur);
-      const ticker = (cols[0] || '').trim().toUpperCase();
-      if (ticker && !stocks.find(s => s.ticker === ticker)) {
-        stocks.push({
-          ticker,
-          name: (cols[1] || ticker).trim(),
-          sectors: cols[2] ? cols[2].split('|').filter(Boolean) : [],
-          price: cols[3] ? cols[3].trim() : null,
-          change: cols[4] ? parseFloat(cols[4]) : null,
-          updatedAt: cols[5] ? cols[5].trim() : null
-        });
-        imported++;
+      const ticker=(cols[0]||'').trim().toUpperCase();
+      if(ticker&&!stocks.find(s=>s.ticker===ticker)){
+        stocks.push({ticker,name:(cols[1]||'').trim(),sectors:cols[2]?cols[2].split('|').filter(Boolean):[],desc:(cols[3]||'').trim(),news:(cols[4]||'').trim(),earnings:(cols[5]||'').trim(),price:cols[6]||null,chgDay:cols[7]?parseFloat(cols[7]):null,chgToday:cols[8]?parseFloat(cols[8]):null,chg30:cols[9]?parseFloat(cols[9]):null,updatedAt:(cols[10]||'').trim()||null});
+        added++;
       }
     });
-    save();
-    alert(`${imported}개 종목을 가져왔습니다.`);
+    save();alert(`${added}개 종목을 가져왔습니다.`);
   };
-  reader.readAsText(file, 'utf-8');
-  input.value = '';
+  reader.readAsText(file,'utf-8');input.value='';
 }
 
-function loadSample() {
-  const samples = [
-    { ticker: 'NVDA', name: '엔비디아', sectors: ['AI', '반도체', '데이터센터'] },
-    { ticker: 'AMD', name: 'AMD', sectors: ['AI', '반도체', '데이터센터'] },
-    { ticker: 'INTC', name: '인텔', sectors: ['반도체', 'AI'] },
-    { ticker: 'MSFT', name: '마이크로소프트', sectors: ['AI', '클라우드', '소프트웨어'] },
-    { ticker: 'GOOGL', name: '알파벳', sectors: ['AI', '클라우드', '데이터센터'] },
-    { ticker: 'AMZN', name: '아마존', sectors: ['클라우드', '데이터센터', '소매'] },
-    { ticker: 'AVGO', name: '브로드컴', sectors: ['반도체', '광통신', 'AI'] },
-    { ticker: 'ANET', name: '아리스타 네트웍스', sectors: ['광통신', '데이터센터', '네트워크'] },
-    { ticker: 'SMCI', name: '슈퍼마이크로', sectors: ['AI', '데이터센터', '하드웨어'] },
-    { ticker: 'TSM', name: 'TSMC', sectors: ['반도체', 'AI'] },
-    { ticker: 'TSLA', name: '테슬라', sectors: ['전기차', 'AI', '배터리'] },
-    { ticker: 'META', name: '메타', sectors: ['AI', '소프트웨어'] },
-    { ticker: 'PANW', name: '팔로알토', sectors: ['소프트웨어', 'AI'] },
-    { ticker: 'PLTR', name: '팔란티어', sectors: ['AI', '소프트웨어', '방산'] },
-  ];
-  let added = 0;
-  samples.forEach(s => {
-    if (!stocks.find(st => st.ticker === s.ticker)) {
-      stocks.push({ ...s, price: null, change: null, updatedAt: null });
-      added++;
-    }
-  });
-  save();
-  alert(`${added}개 샘플 종목을 추가했습니다.\n주가 업데이트 버튼을 눌러 데이터를 불러오세요.`);
-}
-
+document.getElementById('editModal').addEventListener('click',function(e){if(e.target===this)closeEdit();});
 renderPresets();
 renderTable();
 updateMetrics();
-document.getElementById('statusText').textContent = stocks.length ? '업데이트 버튼을 눌러 주가를 갱신하세요.' : '종목을 추가하거나 샘플 데이터를 로드하세요.';
+setStatus('주가 업데이트 버튼을 눌러 데이터를 갱신하세요.', false);
 </script>
 </body>
 </html>
