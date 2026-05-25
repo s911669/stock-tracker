@@ -70,9 +70,9 @@ tbody td { padding: 10px 12px; vertical-align: middle; }
 .down { color: var(--down); font-family: var(--mono); font-weight: 600; }
 .flat { color: var(--text3); font-family: var(--mono); }
 .price { font-family: var(--mono); font-size: 13px; }
-.desc-cell { font-size: 12px; color: var(--text2); max-width: 180px; }
-.news-cell { font-size: 12px; color: var(--text2); max-width: 180px; }
-.earn-cell { font-size: 12px; color: var(--text2); max-width: 150px; }
+.desc-cell { font-size: 12px; color: var(--text2); max-width: 160px; }
+.news-cell { font-size: 12px; color: var(--text2); max-width: 160px; }
+.earn-cell { font-size: 12px; color: var(--text2); max-width: 140px; }
 
 .btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 14px; border-radius: var(--radius); font-size: 12px; font-family: var(--mono); font-weight: 600; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border2); background: var(--surface2); color: var(--text2); letter-spacing: 0.5px; }
 .btn:hover { color: var(--text); border-color: var(--accent2); background: var(--surface); }
@@ -110,6 +110,8 @@ textarea { resize: vertical; min-height: 60px; }
 .form-row { margin-bottom: 1rem; }
 .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
 
+.error-box { background: #2a1a1a; border: 1px solid #5a2a2a; border-radius: var(--radius); padding: 8px 12px; font-size: 12px; color: #f79090; font-family: var(--mono); margin-top: 8px; display: none; }
+
 @media (max-width: 768px) {
   .metrics { grid-template-columns: 1fr 1fr; }
   .form-2col { grid-template-columns: 1fr; }
@@ -135,6 +137,7 @@ textarea { resize: vertical; min-height: 60px; }
     <span id="lastUpdate" style="margin-left:auto;"></span>
     <button class="btn btn-sm btn-accent" onclick="updateAllPrices()" style="margin-left:10px;">⟳ 주가 업데이트</button>
   </div>
+  <div class="error-box" id="errorBox"></div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('list',this)">종목 목록</button>
@@ -305,8 +308,7 @@ if (!stocks) {
   save();
 }
 
-let newTags = [];
-let editTags = [];
+let newTags = [], editTags = [];
 
 function save() { localStorage.setItem('stockTracker_v3', JSON.stringify(stocks)); renderTable(); updateMetrics(); }
 
@@ -325,11 +327,11 @@ function updateMetrics() {
   document.getElementById('m-down').textContent = stocks.filter(s=>s.chgToday<0).length;
 }
 
-function fmt(v, suffix='%') {
+function fmt(v) {
   if(v===null||v===undefined||v==='') return '<span class="flat">--</span>';
   const n = parseFloat(v);
   const cls = n>0?'up':n<0?'down':'flat';
-  return `<span class="${cls}">${n>0?'+':''}${n.toFixed(2)}${suffix}</span>`;
+  return `<span class="${cls}">${n>0?'+':''}${n.toFixed(2)}%</span>`;
 }
 
 function renderTable() {
@@ -355,7 +357,6 @@ function renderTable() {
 
 function deleteStock(i) { if(confirm(`${stocks[i].ticker} 삭제할까요?`)){stocks.splice(i,1);save();} }
 
-// Tag input
 function handleTagInput(e) {
   if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(',','');if(v&&!newTags.includes(v)){newTags.push(v);renderTagWrap();}e.target.value='';}
 }
@@ -372,7 +373,6 @@ function renderPresets(){
 }
 function addPreset(s){if(!newTags.includes(s)){newTags.push(s);renderTagWrap();}}
 
-// Edit tag input
 function handleEditTagInput(e) {
   if(e.key==='Enter'||e.key===','){e.preventDefault();const v=e.target.value.trim().replace(',','');if(v&&!editTags.includes(v)){editTags.push(v);renderEditTagWrap();}e.target.value='';}
 }
@@ -410,72 +410,79 @@ function saveEdit(){
   save();closeEdit();
 }
 
-async function addStock(){
-  const ticker=document.getElementById('newTicker').value.trim().toUpperCase();
-  let name=document.getElementById('newName').value.trim();
-  const desc=document.getElementById('newDesc').value.trim();
-  const news=document.getElementById('newNews').value.trim();
-  const earnings=document.getElementById('newEarn').value.trim();
-  if(!ticker){alert('티커를 입력하세요.');return;}
-  if(stocks.find(s=>s.ticker===ticker)){alert('이미 있는 티커입니다.');return;}
-  if(!name){
-    setStatus('종목명 자동완성 중...', true);
-    name = await fetchName(ticker);
-    setStatus('완료', false);
+// Yahoo Finance via allorigins proxy
+async function fetchPriceData(stock) {
+  try {
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${stock.ticker}?interval=1d&range=35d`;
+    const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxy);
+    const data = await res.json();
+    const parsed = JSON.parse(data.contents);
+    const meta = parsed.chart.result[0].meta;
+    const closes = parsed.chart.result[0].indicators.quote[0].close;
+    const validCloses = closes.filter(v => v !== null);
+    const len = validCloses.length;
+
+    const currentPrice = meta.regularMarketPrice || validCloses[len-1];
+    const prevClose = meta.chartPreviousClose || validCloses[len-2];
+    const close30ago = validCloses[0];
+
+    stock.price = currentPrice ? currentPrice.toFixed(2) : null;
+    stock.chgDay = prevClose && currentPrice ? parseFloat(((currentPrice - prevClose) / prevClose * 100).toFixed(2)) : null;
+    stock.chgToday = stock.chgDay;
+    stock.chg30 = close30ago && currentPrice ? parseFloat(((currentPrice - close30ago) / close30ago * 100).toFixed(2)) : null;
+    stock.updatedAt = new Date().toLocaleString('ko-KR');
+    return true;
+  } catch(e) {
+    console.error(stock.ticker, e);
+    return false;
   }
-  stocks.push({ticker,name,sectors:[...newTags],desc,news,earnings,price:null,chgDay:null,chgToday:null,chg30:null,updatedAt:null});
-  newTags=[];
-  document.getElementById('newTicker').value='';
-  document.getElementById('newName').value='';
-  document.getElementById('newDesc').value='';
-  document.getElementById('newNews').value='';
-  document.getElementById('newEarn').value='';
-  renderTagWrap();
-  save();
-  fetchPriceData(stocks[stocks.length-1]).then(()=>save());
-  alert(`${ticker} 추가 완료!`);
 }
 
-async function fetchName(ticker){
-  try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:100,messages:[{role:'user',content:`What is the full official company name for stock ticker "${ticker}"? Reply with ONLY the company name, nothing else.`}]})});
-    const data=await res.json();
-    return data.content.map(b=>b.text||'').join('').trim()||ticker;
-  }catch(e){return ticker;}
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.style.display = 'block';
+  setTimeout(() => box.style.display='none', 5000);
 }
 
-async function fetchPriceData(stock){
-  try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:200,messages:[{role:'user',content:`Return ONLY valid JSON for stock "${stock.ticker}" with realistic recent data: {"price":123.45,"chgDay":1.23,"chgToday":0.85,"chg30":12.5} where chgDay=yesterday's % change, chgToday=today's % change, chg30=30-day % change. No explanation.`}]})});
-    const data=await res.json();
-    const text=data.content.map(b=>b.text||'').join('');
-    const match=text.match(/\{[\s\S]*?\}/);
-    if(match){
-      const p=JSON.parse(match[0]);
-      stock.price=p.price?parseFloat(p.price).toFixed(2):null;
-      stock.chgDay=p.chgDay!==undefined?parseFloat(p.chgDay.toFixed(2)):null;
-      stock.chgToday=p.chgToday!==undefined?parseFloat(p.chgToday.toFixed(2)):null;
-      stock.chg30=p.chg30!==undefined?parseFloat(p.chg30.toFixed(2)):null;
-      stock.updatedAt=new Date().toLocaleString('ko-KR');
-    }
-  }catch(e){console.error(stock.ticker,e);}
+function setStatus(msg, loading) {
+  document.getElementById('statusText').textContent = msg;
+  document.getElementById('dot').className = 'dot' + (loading ? ' loading' : '');
 }
 
-function setStatus(msg, loading){
-  document.getElementById('statusText').textContent=msg;
-  document.getElementById('dot').className='dot'+(loading?' loading':'');
-}
-
-async function updateAllPrices(){
+async function updateAllPrices() {
   if(!stocks.length){alert('종목이 없습니다.');return;}
+  let failed = 0;
   for(let i=0;i<stocks.length;i++){
     setStatus(`업데이트 중... (${i+1}/${stocks.length}) ${stocks[i].ticker}`, true);
-    await fetchPriceData(stocks[i]);
+    const ok = await fetchPriceData(stocks[i]);
+    if(!ok) failed++;
     save();
   }
-  const now=new Date().toLocaleString('ko-KR');
-  setStatus('업데이트 완료', false);
-  document.getElementById('lastUpdate').textContent='업데이트: '+now;
+  const now = new Date().toLocaleString('ko-KR');
+  setStatus(failed > 0 ? `완료 (${failed}개 실패)` : '업데이트 완료', false);
+  document.getElementById('lastUpdate').textContent = '업데이트: ' + now;
+  if(failed > 0) showError(`${failed}개 종목 주가 조회 실패. 잠시 후 다시 시도하세요.`);
+}
+
+async function addStock() {
+  const ticker = document.getElementById('newTicker').value.trim().toUpperCase();
+  let name = document.getElementById('newName').value.trim();
+  const desc = document.getElementById('newDesc').value.trim();
+  const news = document.getElementById('newNews').value.trim();
+  const earnings = document.getElementById('newEarn').value.trim();
+  if(!ticker){alert('티커를 입력하세요.');return;}
+  if(stocks.find(s=>s.ticker===ticker)){alert('이미 있는 티커입니다.');return;}
+  stocks.push({ticker, name: name||ticker, sectors:[...newTags], desc, news, earnings, price:null, chgDay:null, chgToday:null, chg30:null, updatedAt:null});
+  newTags=[];
+  ['newTicker','newName','newDesc','newNews','newEarn'].forEach(id=>document.getElementById(id).value='');
+  renderTagWrap();
+  save();
+  setStatus(`${ticker} 주가 로딩 중...`, true);
+  await fetchPriceData(stocks[stocks.length-1]);
+  save();
+  setStatus('완료', false);
 }
 
 function populateSelect(){
